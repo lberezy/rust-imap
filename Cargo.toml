@@ -36,3 +36,6 @@ base64 = "0.10"
 [dev-dependencies]
 lettre = "0.9"
 lettre_email = "0.9"
+
+[patch.crates-io]
+imap-proto = { git = 'https://github.com/djc/tokio-imap', branch = "master" }

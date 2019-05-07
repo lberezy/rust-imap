@@ -1,5 +1,5 @@
 use super::{Flag, Seq, Uid};
-use imap_proto::types::{AttributeValue, Envelope, MessageSection, SectionPath};
+use imap_proto::types::{AttributeValue, Envelope, MessageSection, SectionPath, BodyStructure};
 
 /// An IMAP [`FETCH` response](https://tools.ietf.org/html/rfc3501#section-7.4.2) that contains
 /// data about a particular message. This response occurs as the result of a `FETCH` or `STORE`
@@ -97,6 +97,21 @@ impl Fetch {
             .iter()
             .filter_map(|av| match av {
                 AttributeValue::Envelope(env) => Some(&**env),
+                _ => None,
+            })
+            .next()
+    }
+
+    /// The bodystructure of this message, if `BODYSTRUCTURE` was included in the `query` argument to
+    /// `FETCH`.
+    ///
+    /// The full description of the format of bodystructure is given in [RFC 3501 section
+    /// 7.4.2](https://tools.ietf.org/html/rfc3501#section-7.4.2).
+    pub fn bodystructure(&self) -> Option<&BodyStructure> {
+        self.fetch
+            .iter()
+            .filter_map(|av| match av {
+                AttributeValue::BodyStructure(bstruc) => Some(&*bstruc),
                 _ => None,
             })
             .next()
